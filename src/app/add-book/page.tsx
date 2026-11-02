@@ -6,83 +6,76 @@ import toast, { Toaster } from "react-hot-toast";
 
 export default function AddBookPage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  // Image upload toggle ebong state
+  const [imageType, setImageType] = useState<"url" | "file">("url");
+  const [imageUrl, setImageUrl] = useState("");
+  const [selectedFileName, setSelectedFileName] = useState("");
 
   const loggedInUser = {
     name: "Sahad Ibne",
     email: "sahad@gmail.com",
   };
 
-  const [formData, setFormData] = useState({
-    title: "",
-    author: "",
-    category: "Fiction",
-    copies: 1,
-    image: "",
-    description: "",
-  });
-
-  const [imageType, setImageType] = useState<"url" | "file">("url");
-  const [selectedFileName, setSelectedFileName] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Laptop theke file select korar handler
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFileName(file.name);
-      // Local preview URL ba mock URL toiri korchi
       const fakeUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, image: fakeUrl }));
+      setImageUrl(fakeUrl);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const formObject = Object.fromEntries(formData.entries());
 
     const newBookData = {
-      ...formData,
+      ...formObject,
+      image: imageUrl || formObject.image,
       userName: loggedInUser.name,
       userEmail: loggedInUser.email,
       addedDate: new Date().toISOString(),
     };
 
     try {
-      console.log("Submitting Book Data:", newBookData);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/books`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newBookData),
+        },
+      );
 
-      toast.success("Book added successfully to the library!", {
+      if (!result.ok) {
+        throw new Error("Failed to save book to database");
+      }
+
+      const responseData = await result.json();
+      console.log("Database Response:", responseData);
+      toast.success("Book added successfully to the database!", {
         style: {
           background: "#2D5A3F",
           color: "#fff",
           fontSize: "14px",
         },
       });
-
-      setFormData({
-        title: "",
-        author: "",
-        category: "Fiction",
-        copies: 1,
-        image: "",
-        description: "",
-      });
+      form.reset();
+      setImageUrl("");
       setSelectedFileName("");
-
       setTimeout(() => {
         router.push("/books");
       }, 1500);
     } catch (error) {
-      toast.error("Failed to add book. Please try again.");
+      console.error(error);
+      toast.error("Failed to add book. Please check server connection.");
     } finally {
       setLoading(false);
     }
@@ -91,7 +84,6 @@ export default function AddBookPage() {
   return (
     <div className="min-h-screen bg-[#FBF9F5] py-16 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-center" reverseOrder={false} />
-
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12 space-y-2">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
@@ -101,7 +93,6 @@ export default function AddBookPage() {
             Put a book from your shelf into the library.
           </p>
         </div>
-
         <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-sm border border-gray-200/60">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -113,8 +104,6 @@ export default function AddBookPage() {
                   type="text"
                   name="title"
                   required
-                  value={formData.title}
-                  onChange={handleChange}
                   placeholder="e.g. Atomic Habits"
                   className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F] transition"
                 />
@@ -128,8 +117,6 @@ export default function AddBookPage() {
                   type="text"
                   name="author"
                   required
-                  value={formData.author}
-                  onChange={handleChange}
                   placeholder="e.g. James Clear"
                   className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F] transition"
                 />
@@ -142,8 +129,7 @@ export default function AddBookPage() {
                 </label>
                 <select
                   name="category"
-                  value={formData.category}
-                  onChange={handleChange}
+                  defaultValue="Fiction"
                   className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F] transition"
                 >
                   <option value="Fiction">Fiction</option>
@@ -162,13 +148,14 @@ export default function AddBookPage() {
                   type="number"
                   name="copies"
                   min={1}
+                  defaultValue={1}
                   required
-                  value={formData.copies}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F] transition"
                 />
               </div>
             </div>
+
+            {/* Book Image Section with Toggle (URL / Laptop Upload) */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -205,8 +192,8 @@ export default function AddBookPage() {
                   type="url"
                   name="image"
                   required
-                  value={formData.image}
-                  onChange={handleChange}
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
                   placeholder="https://i.ibb.co.com/... or image link"
                   className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F] transition"
                 />
@@ -215,9 +202,9 @@ export default function AddBookPage() {
                   <input
                     type="file"
                     accept="image/*"
-                    required={!formData.image}
+                    required={!imageUrl}
                     onChange={handleFileChange}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                   />
                   <div className="flex items-center justify-between w-full text-gray-600">
                     <span className="truncate">
@@ -232,6 +219,7 @@ export default function AddBookPage() {
                 </div>
               )}
             </div>
+
             <div>
               <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                 Short Description
@@ -240,8 +228,6 @@ export default function AddBookPage() {
                 name="description"
                 rows={4}
                 required
-                value={formData.description}
-                onChange={handleChange}
                 placeholder="Write a brief summary about the book..."
                 className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F] transition resize-none"
               />
@@ -253,6 +239,7 @@ export default function AddBookPage() {
                 </label>
                 <input
                   type="text"
+                  name="userName"
                   readOnly
                   value={loggedInUser.name}
                   className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-sm text-gray-600 cursor-not-allowed select-none"
@@ -265,6 +252,7 @@ export default function AddBookPage() {
                 </label>
                 <input
                   type="email"
+                  name="userEmail"
                   readOnly
                   value={loggedInUser.email}
                   className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-sm text-gray-600 cursor-not-allowed select-none"
