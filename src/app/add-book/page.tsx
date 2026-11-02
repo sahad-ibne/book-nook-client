@@ -7,8 +7,6 @@ import toast, { Toaster } from "react-hot-toast";
 export default function AddBookPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
-  // Image upload toggle ebong state
   const [imageType, setImageType] = useState<"url" | "file">("url");
   const [imageUrl, setImageUrl] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
@@ -132,11 +130,23 @@ export default function AddBookPage() {
                   defaultValue="Fiction"
                   className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F] transition"
                 >
-                  <option value="Fiction">Fiction</option>
-                  <option value="Science">Science</option>
+                  <option value="Science Fiction">Science Fiction</option>
+                  <option value="Romance">Romance</option>
                   <option value="History">History</option>
-                  <option value="Kids">Kids</option>
-                  <option value="Others">Others</option>
+                  <option value="Self-Help">Self-Help</option>
+                  <option value="Fantasy">Fantasy</option>
+                  <option value="Adventure">Adventure</option>
+                  <option value="Dystopian">Dystopian</option>
+                  <option value="Biography">Biography</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Motivation">Motivation</option>
+                  <option value="Communication">Communication</option>
+                  <option value="Entrepreneurship">Entrepreneurship</option>
+                  <option value="Programming">Programming</option>
+                  <option value="Psychology">Psychology</option>
+                  <option value="Philosophical Fiction">
+                    Philosophical Fiction
+                  </option>
                 </select>
               </div>
 
@@ -154,8 +164,6 @@ export default function AddBookPage() {
                 />
               </div>
             </div>
-
-            {/* Book Image Section with Toggle (URL / Laptop Upload) */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">

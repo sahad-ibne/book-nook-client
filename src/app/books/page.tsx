@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 interface Book {
   _id?: string;
@@ -10,62 +11,79 @@ interface Book {
   author: string;
   category: string;
   image: string;
-  description?: string;
-  copies?: number;
 }
 
 export default function AllBooksPage() {
+  const searchParams = useSearchParams();
+  const selectedCategory = searchParams.get("category");
+
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/allBooks`,
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch books");
+        let url = `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/allBooks`;
+        if (selectedCategory) {
+          url = `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/books/category/${encodeURIComponent(selectedCategory)}`;
         }
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch books");
         const data = await response.json();
         setBooks(data);
       } catch (error) {
-        console.error("Error fetching books:", error);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBooks();
-  }, []);
+  }, [selectedCategory]);
 
   return (
     <div className="min-h-screen bg-[#FBF9F5] py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 space-y-2">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
-            All Books Collection
+            {selectedCategory
+              ? `${selectedCategory} Books`
+              : "All Books Collection"}
           </h1>
           <p className="text-sm text-gray-600">
-            Explore and borrow literature from our community library shelf.
+            {selectedCategory
+              ? `Showing books filtered under "${selectedCategory}" genre.`
+              : "Explore and borrow literature from our community library shelf."}
           </p>
+          {selectedCategory && (
+            <div className="pt-2">
+              <Link
+                href="/books"
+                className="text-xs font-semibold text-[#2D5A3F] underline"
+              >
+                Clear filter & show all books
+              </Link>
+            </div>
+          )}
         </div>
+
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <p className="text-sm text-gray-500 animate-pulse">
-              Loading books from database...
+              Loading books...
             </p>
           </div>
         ) : books.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
-            <p className="text-sm text-gray-500">
-              No books found in the library yet.
+            <p className="text-sm text-gray-500 mb-4">
+              No books found in this category.
             </p>
             <Link
-              href="/add-book"
-              className="inline-block mt-4 px-5 py-2.5 text-xs font-semibold text-white bg-[#2D5A3F] rounded-xl hover:bg-[#234631] transition"
+              href="/books"
+              className="px-5 py-2.5 text-xs font-semibold text-white bg-[#2D5A3F] rounded-xl hover:bg-[#234631] transition"
             >
-              Add the First Book
+              View All Books
             </Link>
           </div>
         ) : (
@@ -95,7 +113,7 @@ export default function AllBooksPage() {
                       {book.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-500">
-                      By
+                      By{" "}
                       <span className="font-medium text-gray-700">
                         {book.author}
                       </span>
