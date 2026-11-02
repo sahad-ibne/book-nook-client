@@ -4,8 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const user = {
@@ -40,7 +38,7 @@ export default function Navbar() {
               </span>
             </Link>
           </div>
-          <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-gray-600">
+          <nav className="hidden md:flex items-center gap-6 font-medium text-sm text-gray-600">
             <Link href="/" className="hover:text-[#2D5A3F] transition-colors">
               Home
             </Link>
@@ -50,91 +48,50 @@ export default function Navbar() {
             >
               All Books
             </Link>
-
-            {isLoggedIn && (
-              <>
-                <Link
-                  href="/add-book"
-                  className="hover:text-[#2D5A3F] transition-colors"
-                >
-                  Add Book
-                </Link>
-                <Link
-                  href="/my-books"
-                  className="hover:text-[#2D5A3F] transition-colors"
-                >
-                  My Books
-                </Link>
-                <Link
-                  href="/my-borrows"
-                  className="hover:text-[#2D5A3F] transition-colors"
-                >
-                  My Borrows
-                </Link>
-              </>
-            )}
+            <Link
+              href="/add-book"
+              className="hover:text-[#2D5A3F] transition-colors"
+            >
+              Add Book
+            </Link>
+            <Link
+              href="/my-books"
+              className="hover:text-[#2D5A3F] transition-colors"
+            >
+              My Books
+            </Link>
+            <Link
+              href="/my-borrows"
+              className="hover:text-[#2D5A3F] transition-colors"
+            >
+              My Borrows
+            </Link>
           </nav>
           <div className="hidden md:flex items-center gap-4">
-            {!isLoggedIn ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  href="/login"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#2D5A3F] transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-5 py-2 text-sm font-medium text-white bg-[#2D5A3F] rounded-xl hover:bg-[#234631] transition shadow-sm"
-                >
-                  Register
-                </Link>
-              </div>
-            ) : (
-              <div className="relative">
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 focus:outline-none"
-                >
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#2D5A3F]">
-                    <Image
-                      src={user.image}
-                      alt={user.name}
-                      width={40}
-                      height={40}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </button>
-
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 text-sm">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="font-semibold text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-400 truncate">
-                        {user.email}
-                      </p>
-                    </div>
-                    <Link
-                      href="/profile"
-                      onClick={() => setIsDropdownOpen(false)}
-                      className="block px-4 py-2 text-gray-700 hover:bg-emerald-50"
-                    >
-                      My Profile
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setIsLoggedIn(false);
-                        setIsDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+            <Link
+              href="/login"
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#2D5A3F] transition"
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="px-5 py-2 text-sm font-medium text-white bg-[#2D5A3F] rounded-xl hover:bg-[#234631] transition shadow-sm"
+            >
+              Register
+            </Link>
+            <Link
+              href="/profile"
+              className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#2D5A3F] ml-1"
+            >
+              <Image
+                src={user.image}
+                alt={user.name}
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            </Link>
           </div>
           <div className="md:hidden flex items-center">
             <button
@@ -183,60 +140,43 @@ export default function Navbar() {
           >
             All Books
           </Link>
-          {isLoggedIn && (
-            <>
-              <Link
-                href="/add-book"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-2 font-medium text-gray-800"
-              >
-                Add Book
-              </Link>
-              <Link
-                href="/my-books"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-2 font-medium text-gray-800"
-              >
-                My Books
-              </Link>
-              <Link
-                href="/my-borrows"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-2 font-medium text-gray-800"
-              >
-                My Borrows
-              </Link>
-            </>
-          )}
+          <Link
+            href="/add-book"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="block py-2 font-medium text-gray-800"
+          >
+            Add Book
+          </Link>
+          <Link
+            href="/my-books"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="block py-2 font-medium text-gray-800"
+          >
+            My Books
+          </Link>
+          <Link
+            href="/my-borrows"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="block py-2 font-medium text-gray-800"
+          >
+            My Borrows
+          </Link>
+
           <div className="pt-3 border-t border-gray-200 flex flex-col gap-2">
-            {!isLoggedIn ? (
-              <>
-                <Link
-                  href="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-center py-2.5 font-medium text-gray-800 bg-gray-100 rounded-xl"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-center py-2.5 font-medium text-white bg-[#2D5A3F] rounded-xl"
-                >
-                  Register
-                </Link>
-              </>
-            ) : (
-              <button
-                onClick={() => {
-                  setIsLoggedIn(false);
-                  setIsMobileMenuOpen(false);
-                }}
-                className="text-center py-2.5 font-medium text-red-600 bg-red-50 rounded-xl"
-              >
-                Logout
-              </button>
-            )}
+            <Link
+              href="/login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-center py-2.5 font-medium text-gray-800 bg-gray-100 rounded-xl"
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-center py-2.5 font-medium text-white bg-[#2D5A3F] rounded-xl"
+            >
+              Register
+            </Link>
           </div>
         </div>
       )}
