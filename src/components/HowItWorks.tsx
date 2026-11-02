@@ -31,14 +31,15 @@ export default function HowItWorks() {
   return (
     <section className="py-20 bg-[#FBF9F5]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+        {/* Left aligned header matching News section style */}
+        <div className="mb-12 border-b border-gray-200/80 pb-6">
           <span className="text-xs font-bold tracking-widest text-[#E08552] uppercase">
             Simple Process
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mt-1">
             How Borrowing Works
           </h2>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-500 mt-2">
             Getting your hands on great literature has never been easier. Three
             steps to start reading.
           </p>
