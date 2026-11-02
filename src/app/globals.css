@@ -1,3 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+
+.swiper-pagination-bullet {
+  background: #ffffff !important;
+  opacity: 0.5;
+  width: 10px;
+  height: 10px;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  background: #2d5a3f !important;
+  opacity: 1;
+  width: 24px;
+  border-radius: 6px;
+}
