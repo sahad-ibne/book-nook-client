@@ -6,7 +6,27 @@ import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "@/lib/auth-client";
 import { serverBaseUrl } from "@/lib/server";
 
-const categories = ["Fiction", "Science", "History", "Kids", "Others"];
+const categories = [
+  "Fiction",
+  "Science Fiction",
+  "Romance",
+  "History",
+  "Self-Help",
+  "Fantasy",
+  "Adventure",
+  "Dystopian",
+  "Biography",
+  "Finance",
+  "Motivation",
+  "Communication",
+  "Entrepreneurship",
+  "Programming",
+  "Psychology",
+  "Philosophical Fiction",
+  "Science",
+  "Kids",
+  "Others",
+];
 
 export default function AddBookPage() {
   const router = useRouter();
@@ -69,7 +89,9 @@ export default function AddBookPage() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Failed to add book");
 
-      toast.success("Book added successfully!");
+      toast.success("Book added successfully!", {
+        style: { background: "#2D5A3F", color: "#fff", fontSize: "14px" },
+      });
       setTimeout(() => router.push("/books"), 700);
     } catch (error) {
       toast.error(
@@ -83,8 +105,8 @@ export default function AddBookPage() {
   return (
     <main className="min-h-screen bg-[#FBF9F5] px-4 py-16">
       <Toaster position="top-center" />
-      <div className="mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="mb-8 text-center text-3xl font-bold text-gray-900">
+      <div className="mx-auto max-w-3xl rounded-2xl border border-gray-200/80 bg-white p-8 sm:p-12 shadow-sm">
+        <h1 className="mb-8 text-center text-3xl font-bold text-gray-900 tracking-tight">
           Add a Book
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -93,7 +115,7 @@ export default function AddBookPage() {
               <input
                 required
                 name="title"
-                className="input"
+                className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F]"
                 placeholder="Atomic Habits"
               />
             </Field>
@@ -101,30 +123,34 @@ export default function AddBookPage() {
               <input
                 required
                 name="author"
-                className="input"
+                className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F]"
                 placeholder="James Clear"
               />
             </Field>
           </div>
+
           <Field label="Category">
             <select
               required
               name="category"
-              className="input"
+              className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F]"
               defaultValue="Fiction"
             >
               {categories.map((category) => (
-                <option key={category}>{category}</option>
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
           </Field>
-          <div className="grid gap-4 sm:grid-cols-[1fr_180px]">
+
+          <div className="grid gap-4 sm:grid-cols-[1fr_180px] items-end">
             <Field label="Book Image URL">
               <input
                 type="url"
                 value={imageUrl}
                 onChange={(event) => setImageUrl(event.target.value)}
-                className="input"
+                className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F]"
                 placeholder="https://..."
               />
             </Field>
@@ -135,38 +161,41 @@ export default function AddBookPage() {
                 onChange={(event) =>
                   setSelectedFile(event.target.files?.[0] || null)
                 }
-                className="block w-full text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-[#2D5A3F] file:px-3 file:py-3 file:text-white"
+                className="block w-full text-xs text-gray-500 file:mr-3 file:rounded-xl file:border-0 file:bg-[#2D5A3F] file:px-4 file:py-3 file:text-white file:font-semibold file:cursor-pointer hover:file:bg-[#234631]"
               />
             </Field>
           </div>
+
           <Field label="Short Description">
             <textarea
               required
               name="description"
               rows={4}
-              className="input resize-none"
+              className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F] resize-none"
               placeholder="Write a brief summary..."
             />
           </Field>
+
           <div className="grid gap-6 sm:grid-cols-2">
             <Field label="User Name (read-only)">
               <input
                 readOnly
                 value={session?.user?.name || ""}
-                className="input bg-gray-100"
+                className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-sm text-gray-600 select-none cursor-not-allowed"
               />
             </Field>
             <Field label="User Email (read-only)">
               <input
                 readOnly
                 value={session?.user?.email || ""}
-                className="input bg-gray-100"
+                className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-sm text-gray-600 select-none cursor-not-allowed"
               />
             </Field>
           </div>
+
           <button
             disabled={loading}
-            className="w-full rounded-xl bg-[#2D5A3F] py-3.5 text-sm font-semibold text-white disabled:opacity-50"
+            className="w-full rounded-xl bg-[#2D5A3F] py-3.5 text-sm font-semibold uppercase tracking-wider text-white shadow-md hover:bg-[#234631] transition disabled:opacity-50"
           >
             {loading ? "Adding Book..." : "Add Book"}
           </button>
