@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "@/lib/auth-client";
+import { serverBaseUrl } from "@/lib/server";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface Book {
   _id: string;
@@ -19,6 +21,20 @@ interface Book {
 }
 
 export default function BookDetailsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#FBF9F5]">
+          <LoadingSpinner label="Loading book details..." />
+        </div>
+      }
+    >
+      <BookDetailsContent />
+    </Suspense>
+  );
+}
+
+function BookDetailsContent() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
@@ -34,7 +50,7 @@ export default function BookDetailsPage() {
     const fetchBookDetails = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/books/${id}`,
+          `${serverBaseUrl}/books/${id}`,
         );
         const data = await response.json();
         setBook(data);
@@ -65,7 +81,7 @@ export default function BookDetailsPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/borrows`,
+        `${serverBaseUrl}/borrows`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

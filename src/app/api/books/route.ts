@@ -3,6 +3,25 @@ import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/mongodb";
 
 export async function GET(request: Request) {
+  const serverUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL?.replace(/\/$/, "");
+  if (serverUrl) {
+    const { searchParams } = new URL(request.url);
+    const category = searchParams.get("category");
+    const endpoint = category
+      ? `${serverUrl}/books/category/${encodeURIComponent(category)}`
+      : `${serverUrl}/allBooks`;
+    const response = await fetch(endpoint, { cache: "no-store" });
+    if (!response.ok) {
+      return Response.json(
+        { message: "Failed to fetch books from the server" },
+        { status: response.status },
+      );
+    }
+    return Response.json(await response.json(), {
+      headers: { "Cache-Control": "no-store" },
+    });
+  }
+
   const db = await getDatabase();
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");

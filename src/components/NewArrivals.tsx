@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { serverBaseUrl } from "@/lib/server";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface Book {
   _id?: string;
@@ -57,11 +58,7 @@ export default function NewArrivals() {
 
         {/* Loading State */}
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <p className="text-sm text-gray-500 animate-pulse">
-              Loading new arrivals...
-            </p>
-          </div>
+          <LoadingSpinner label="Loading new arrivals..." />
         ) : books.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
             <p className="text-sm text-gray-500">No books added yet.</p>

@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "@/lib/auth-client";
 import { serverBaseUrl } from "@/lib/server";
 import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface Book {
   _id: string;
@@ -64,7 +65,6 @@ export default function MyBooksPage() {
       setLoading(false);
     }
   }
-
   useEffect(() => {
     async function fetchBooks() {
       if (!session?.user?.email) return;
@@ -159,9 +159,7 @@ export default function MyBooksPage() {
           My Added Books
         </h1>
         {loading ? (
-          <p className="text-center text-sm text-gray-500">
-            Loading your books...
-          </p>
+          <LoadingSpinner label="Loading your books..." />
         ) : books.length === 0 ? (
           <p className="rounded-2xl border border-gray-200 bg-white py-20 text-center text-sm text-gray-500">
             You have not added any books yet.

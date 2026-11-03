@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import { useSession } from "@/lib/auth-client";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface Borrow {
   _id: string;
@@ -81,9 +82,7 @@ export default function MyBorrowsPage() {
           My Borrows
         </h1>
         {loading ? (
-          <p className="text-center text-sm text-gray-500">
-            Loading borrowed books...
-          </p>
+          <LoadingSpinner label="Loading borrowed books..." />
         ) : borrows.length === 0 ? (
           <p className="rounded-2xl border border-gray-200 bg-white py-20 text-center text-sm text-gray-500">
             You have no borrowed books.
