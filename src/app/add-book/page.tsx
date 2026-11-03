@@ -35,12 +35,18 @@ export default function AddBookPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  async function uploadImage(file: File) {
+  async function convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
+  async function uploadImageToImgBB(file: File) {
     const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-    if (!apiKey)
-      throw new Error(
-        "Image upload is not configured. Please add NEXT_PUBLIC_IMGBB_API_KEY.",
-      );
+    if (!apiKey) throw new Error("No API key");
     const data = new FormData();
     data.append("image", file);
     const response = await fetch(
@@ -68,8 +74,21 @@ export default function AddBookPage() {
     try {
       const form = new FormData(event.currentTarget);
       let uploadedImage = imageUrl.trim();
-      if (selectedFile) uploadedImage = await uploadImage(selectedFile);
-      if (!uploadedImage) throw new Error("Please provide a book image.");
+
+      if (selectedFile) {
+        try {
+          uploadedImage = await uploadImageToImgBB(selectedFile);
+        } catch {
+          uploadedImage = await convertFileToBase64(selectedFile);
+        }
+      }
+
+      if (!uploadedImage) {
+        uploadedImage =
+          "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=800&auto=format&fit=crop";
+      }
+
+      const copiesValue = Number(form.get("copies")) || 1;
 
       const response = await fetch(`${serverBaseUrl}/books`, {
         method: "POST",
@@ -80,7 +99,7 @@ export default function AddBookPage() {
           category: form.get("category"),
           description: form.get("description"),
           image: uploadedImage,
-          copies: 1,
+          copies: copiesValue,
           userName: session.user.name,
           userEmail: session.user.email,
           addedDate: new Date().toISOString(),
@@ -129,22 +148,36 @@ export default function AddBookPage() {
             </Field>
           </div>
 
-          <Field label="Category">
-            <select
-              required
-              name="category"
-              className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F]"
-              defaultValue="Fiction"
-            >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </Field>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <Field label="Category">
+              <select
+                required
+                name="category"
+                className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F]"
+                defaultValue="Fiction"
+              >
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </Field>
 
-          <div className="grid gap-4 sm:grid-cols-[1fr_180px] items-end">
+            <Field label="Total Copies">
+              <input
+                type="number"
+                required
+                name="copies"
+                min={0}
+                defaultValue={1}
+                className="w-full px-4 py-3 bg-[#FBF9F5] border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#2D5A3F]"
+                placeholder="1"
+              />
+            </Field>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2">
             <Field label="Book Image URL">
               <input
                 type="url"
@@ -154,14 +187,14 @@ export default function AddBookPage() {
                 placeholder="https://..."
               />
             </Field>
-            <Field label="Or upload an image">
+            <Field label="Or Upload An Image File">
               <input
                 type="file"
                 accept="image/*"
                 onChange={(event) =>
                   setSelectedFile(event.target.files?.[0] || null)
                 }
-                className="block w-full text-xs text-gray-500 file:mr-3 file:rounded-xl file:border-0 file:bg-[#2D5A3F] file:px-4 file:py-3 file:text-white file:font-semibold file:cursor-pointer hover:file:bg-[#234631]"
+                className="w-full text-xs text-gray-500 file:mr-3 file:rounded-xl file:border-0 file:bg-[#2D5A3F] file:px-4 file:py-3 file:text-white file:font-semibold file:cursor-pointer hover:file:bg-[#234631] bg-[#FBF9F5] border border-gray-200 rounded-xl p-1.5"
               />
             </Field>
           </div>

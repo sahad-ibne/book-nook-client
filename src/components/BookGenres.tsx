@@ -84,7 +84,7 @@ const genres = [
 export default function BookGenres() {
   return (
     <section className="py-20 bg-[#FBF9F5] border-t border-gray-200/60">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 ">
         <div className="mb-12 space-y-2">
           <span className="text-xs font-bold tracking-widest text-[#E08552] uppercase">
             Explore Categories
@@ -92,7 +92,7 @@ export default function BookGenres() {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
             Book Genres
           </h2>
-          <p className="text-sm text-gray-500 max-w-lg mx-auto">
+          <p className="text-sm text-gray-500 max-w-lg">
             Browse through our wide range of book genres tailored to your
             reading taste.
           </p>

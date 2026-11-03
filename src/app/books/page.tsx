@@ -18,7 +18,13 @@ interface Book {
 
 export default function BooksPage() {
   return (
-    <Suspense fallback={<main className="min-h-screen bg-[#FBF9F5] px-4 py-16"><LoadingSpinner label="Loading books..." /></main>}>
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-[#FBF9F5] px-4 py-16">
+          <LoadingSpinner label="Loading books..." />
+        </main>
+      }
+    >
       <BooksContent />
     </Suspense>
   );
@@ -41,7 +47,8 @@ function BooksContent() {
           cache: "no-store",
         });
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Failed to load books");
+        if (!response.ok)
+          throw new Error(data.message || "Failed to load books");
         setBooks(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error(error);
@@ -71,7 +78,9 @@ function BooksContent() {
         ) : books.length === 0 ? (
           <div className="rounded-2xl border border-gray-200 bg-white py-16 text-center">
             <p className="text-sm text-gray-500">
-              {category ? `No books found in ${category}.` : "No books added yet."}
+              {category
+                ? `No books found in ${category}.`
+                : "No books added yet."}
             </p>
           </div>
         ) : (
@@ -104,7 +113,7 @@ function BooksContent() {
                   )}
                   <Link
                     href={`/books/${book._id}`}
-                    className="mt-auto pt-6 text-center rounded-xl border border-gray-900 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-900 hover:border-[#2D5A3F] hover:bg-[#2D5A3F] hover:text-white"
+                    className="mt-2 p-2.5 text-center rounded-xl border border-gray-900 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-900 hover:border-[#2D5A3F] hover:bg-[#2D5A3F] hover:text-white"
                   >
                     View Details
                   </Link>
