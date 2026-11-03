@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { serverBaseUrl } from "@/lib/server";
 
 interface Book {
-  _id?: string;
+  _id: string;
   title: string;
   author: string;
   category: string;
@@ -14,125 +16,88 @@ interface Book {
 }
 
 export default function AllBooksPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#FBF9F5]" />}>
+      <AllBooksContent />
+    </Suspense>
+  );
+}
+
+function AllBooksContent() {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category");
 
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        let url = `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/allBooks`;
-        if (selectedCategory) {
-          url = `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/books/category/${encodeURIComponent(selectedCategory)}`;
-        }
-
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch books");
+    const url = selectedCategory
+      ? `${serverBaseUrl}/books/category/${encodeURIComponent(selectedCategory)}`
+      : `${serverBaseUrl}/allBooks`;
+    fetch(url, { cache: "no-store" })
+      .then(async (response) => {
         const data = await response.json();
+        if (!response.ok)
+          throw new Error(data.message || "Failed to fetch books");
         setBooks(data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
+      })
+      .catch((error) => toast.error(error.message || "Failed to fetch books"))
+      .finally(() => setLoading(false));
   }, [selectedCategory]);
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12 space-y-2">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+    <main className="min-h-screen bg-[#FBF9F5] px-4 py-16">
+      <Toaster position="top-center" />
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl font-bold text-gray-900">
             {selectedCategory
               ? `${selectedCategory} Books`
               : "All Books Collection"}
           </h1>
-          <p className="text-sm text-gray-600">
-            {selectedCategory
-              ? `Showing books filtered under "${selectedCategory}" genre.`
-              : "Explore and borrow literature from our community library shelf."}
+          <p className="mt-2 text-sm text-gray-600">
+            Explore books from our community library.
           </p>
-          {selectedCategory && (
-            <div className="pt-2">
-              <Link
-                href="/books"
-                className="text-xs font-semibold text-[#2D5A3F] underline"
-              >
-                Clear filter & show all books
-              </Link>
-            </div>
-          )}
         </div>
-
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <p className="text-sm text-gray-500 animate-pulse">
-              Loading books...
-            </p>
-          </div>
+          <p className="text-center text-sm text-gray-500">Loading books...</p>
         ) : books.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
-            <p className="text-sm text-gray-500 mb-4">
-              No books found in this category.
-            </p>
-            <Link
-              href="/books"
-              className="px-5 py-2.5 text-xs font-semibold text-white bg-[#2D5A3F] rounded-xl hover:bg-[#234631] transition"
-            >
-              View All Books
-            </Link>
-          </div>
+          <p className="rounded-2xl border border-gray-200 bg-white py-20 text-center text-sm text-gray-500">
+            No books found.
+          </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {books.map((book, index) => (
-              <div
-                key={book._id || index}
-                className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {books.map((book) => (
+              <article
+                key={book._id}
+                className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
               >
-                <div>
-                  <div className="relative h-64 w-full bg-gray-100 overflow-hidden">
-                    <Image
-                      src={
-                        book.image ||
-                        "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=800&auto=format&fit=crop"
-                      }
-                      alt={book.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <span className="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm text-xs font-semibold text-[#2D5A3F] rounded-full shadow-sm">
-                      {book.category}
-                    </span>
-                  </div>
-                  <div className="p-6 space-y-2">
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#2D5A3F] transition-colors line-clamp-1">
-                      {book.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-500">
-                      By{" "}
-                      <span className="font-medium text-gray-700">
-                        {book.author}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div className="p-6 pt-0">
+                <img
+                  src={book.image}
+                  alt={book.title}
+                  className="h-64 w-full object-cover"
+                />
+                <div className="flex flex-1 flex-col p-6">
+                  <span className="mb-2 text-xs font-semibold uppercase text-[#2D5A3F]">
+                    {book.category}
+                  </span>
+                  <h2 className="text-lg font-bold text-gray-900">
+                    {book.title}
+                  </h2>
+                  <p className="mb-6 mt-1 text-sm text-gray-500">
+                    By {book.author}
+                  </p>
                   <Link
-                    href={`/books/${book._id || index}`}
-                    className="w-full block text-center py-2.5 px-4 text-xs font-semibold uppercase tracking-wider text-gray-900 border border-gray-900 rounded-xl hover:bg-[#2D5A3F] hover:border-[#2D5A3F] hover:text-white transition-all duration-300"
+                    href={`/books/${book._id}`}
+                    className="mt-auto rounded-xl border border-gray-900 px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-wider transition hover:border-[#2D5A3F] hover:bg-[#2D5A3F] hover:text-white"
                   >
                     View Details
                   </Link>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }

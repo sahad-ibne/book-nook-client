@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { serverBaseUrl } from "@/lib/server";
 
 interface Book {
   _id?: string;
@@ -20,14 +21,12 @@ export default function NewArrivals() {
   useEffect(() => {
     const fetchLatestBooks = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/latest-books`,
-        );
+        const response = await fetch(`${serverBaseUrl}/latest-books`);
         if (!response.ok) {
           throw new Error("Failed to fetch latest books");
         }
         const data = await response.json();
-        setBooks(data);
+        setBooks(data.slice(0, 6));
       } catch (error) {
         console.error("Error fetching latest books:", error);
       } finally {
