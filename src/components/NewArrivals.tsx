@@ -41,7 +41,6 @@ export default function NewArrivals() {
   return (
     <section className="py-20 bg-[#FBF9F5]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 border-b border-gray-200/80 pb-6">
           <div>
             <span className="text-xs font-bold tracking-widest text-[#E08552] uppercase">
@@ -55,8 +54,6 @@ export default function NewArrivals() {
             </p>
           </div>
         </div>
-
-        {/* Loading State */}
         {loading ? (
           <LoadingSpinner label="Loading new arrivals..." />
         ) : books.length === 0 ? (
@@ -65,7 +62,6 @@ export default function NewArrivals() {
           </div>
         ) : (
           <>
-            {/* Grid Layout: 3 cards per row on desktop */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {books.map((book, index) => (
                 <div
@@ -73,7 +69,6 @@ export default function NewArrivals() {
                   className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
                 >
                   <div>
-                    {/* Book Image */}
                     <div className="relative h-64 w-full bg-gray-100 overflow-hidden">
                       <Image
                         src={
@@ -88,8 +83,6 @@ export default function NewArrivals() {
                         {book.category}
                       </span>
                     </div>
-
-                    {/* Book Info */}
                     <div className="p-6 space-y-2">
                       <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#2D5A3F] transition-colors line-clamp-1">
                         {book.title}
@@ -102,8 +95,6 @@ export default function NewArrivals() {
                       </p>
                     </div>
                   </div>
-
-                  {/* View Details Button */}
                   <div className="p-6 pt-0">
                     <Link
                       href={`/books/${book._id || index}`}
@@ -115,8 +106,6 @@ export default function NewArrivals() {
                 </div>
               ))}
             </div>
-
-            {/* See All Books Button */}
             <div className="mt-12 text-center">
               <Link
                 href="/books"

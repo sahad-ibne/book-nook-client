@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -14,7 +14,6 @@ export default function Navbar() {
   const { data: session, isPending } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -23,18 +22,6 @@ export default function Navbar() {
     { name: "My Books", href: "/my-books" },
     { name: "My Borrows", href: "/my-borrows" },
   ];
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const handleLogout = () => {
     setDropdownOpen(false);
@@ -95,7 +82,7 @@ export default function Navbar() {
           {isPending ? (
             <div className="text-xs text-gray-400">Loading...</div>
           ) : session?.user ? (
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center gap-3 focus:outline-none"

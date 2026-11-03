@@ -8,7 +8,6 @@ export default function BookStories() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Left aligned header matching News section style */}
         <div className="mb-12 border-b border-gray-200/80 pb-6">
           <span className="text-xs font-bold tracking-widest text-[#E08552] uppercase">
             Visual Gallery

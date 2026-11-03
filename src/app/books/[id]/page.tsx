@@ -126,8 +126,6 @@ function BookDetailsContent() {
       setBorrowing(false);
     }
   };
-
-  // Submit Review Handler
   async function handleReviewSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!session?.user || !book) return;
@@ -156,8 +154,6 @@ function BookDetailsContent() {
       toast.error(err.message || "Something went wrong");
     }
   }
-
-  // Submit Quote Handler
   async function handleQuoteSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!session?.user || !book) return;
@@ -222,8 +218,6 @@ function BookDetailsContent() {
               </h1>
               <p className="text-sm text-gray-500 mt-1">By {book.author}</p>
             </div>
-
-            {/* Added By Information */}
             <div className="inline-block px-3 py-1 bg-[#FBF9F5] border border-gray-200 rounded-lg text-xs text-gray-600">
               Added by:{" "}
               <span className="font-semibold text-gray-900">
@@ -247,8 +241,6 @@ function BookDetailsContent() {
             </button>
           </div>
         </div>
-
-        {/* ================= REVIEWS & QUOTES SECTION ================= */}
         <div className="mt-16 border-t border-gray-200 pt-12">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
@@ -257,13 +249,10 @@ function BookDetailsContent() {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-2">
-            {/* --- LEFT: Ratings & Reviews --- */}
             <div className="bg-[#FBF9F5] p-6 sm:p-8 rounded-2xl border border-gray-200/80 shadow-sm space-y-6">
               <h3 className="text-lg font-bold text-gray-900">
                 Ratings & Reviews
               </h3>
-
-              {/* Add Review Form */}
               {session?.user ? (
                 <form onSubmit={handleReviewSubmit} className="space-y-4">
                   <div>
@@ -306,8 +295,6 @@ function BookDetailsContent() {
                   Please login to write a review.
                 </p>
               )}
-
-              {/* Reviews List */}
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 {book.reviews && book.reviews.length > 0 ? (
                   book.reviews.map((rev, idx) => (
@@ -338,14 +325,10 @@ function BookDetailsContent() {
                 )}
               </div>
             </div>
-
-            {/* --- RIGHT: Memorable Quotes --- */}
             <div className="bg-[#FBF9F5] p-6 sm:p-8 rounded-2xl border border-gray-200/80 shadow-sm space-y-6">
               <h3 className="text-lg font-bold text-gray-900">
                 Memorable Quotes
               </h3>
-
-              {/* Add Quote Form */}
               {session?.user ? (
                 <form onSubmit={handleQuoteSubmit} className="space-y-4">
                   <div>
@@ -372,8 +355,6 @@ function BookDetailsContent() {
                   Please login to share a quote.
                 </p>
               )}
-
-              {/* Quotes List */}
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 {book.quotes && book.quotes.length > 0 ? (
                   book.quotes.map((q, idx) => (
@@ -399,8 +380,6 @@ function BookDetailsContent() {
           </div>
         </div>
       </div>
-
-      {/* CONFIRM BORROW MODAL */}
       {borrowModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-xl space-y-6">

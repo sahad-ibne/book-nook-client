@@ -20,12 +20,12 @@ export default function Footer() {
             Contact
           </h2>
           <a
-            href="mailto:hello@booknook.com"
+            href="mailto:binsahad91@gmail.com"
             className="mt-4 block text-sm text-gray-300 hover:text-white"
           >
-            hello@booknook.com
+            binsahad91@gmail.com
           </a>
-          <p className="mt-2 text-sm text-gray-300">Dhaka, Bangladesh</p>
+          <p className="mt-2 text-sm text-gray-300">Chittagong, Bangladesh</p>
         </div>
         <div>
           <h2 className="text-sm font-bold uppercase tracking-wider">
@@ -57,13 +57,13 @@ export default function Footer() {
               aria-label="LinkedIn"
               className="rounded-lg border border-white/20 px-3 py-2 text-sm text-gray-300 hover:text-white"
             >
-              in
+              Ln
             </a>
           </div>
         </div>
       </div>
       <div className="border-t border-white/10 py-5 text-center text-xs text-gray-400">
-        © 2026 BookNook. All rights reserved.
+        © 2026 BookNook.
       </div>
     </footer>
   );
