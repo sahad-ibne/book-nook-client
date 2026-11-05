@@ -158,8 +158,6 @@ export default function BookDetailsContent({
 
       toast.success("Review added successfully!");
       form.reset();
-
-      // Update UI state instantly
       setBook((prev) =>
         prev
           ? {
@@ -204,8 +202,6 @@ export default function BookDetailsContent({
 
       toast.success("Quote added successfully!");
       form.reset();
-
-      // Update UI state instantly
       setBook((prev) =>
         prev
           ? {
