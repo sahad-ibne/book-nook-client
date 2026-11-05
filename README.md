@@ -37,6 +37,6 @@ Welcome to **BookNook**, a full-stack digital sanctuary crafted for readers and 
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/your-username/book-nook-client.git](https://github.com/your-username/book-nook-client.git)
+   git clone [https://github.com/sahad-ibne/book-nook-client.git](https://github.com/sahad-ibne/book-nook-client.git)
    cd book-nook-client
    ```
