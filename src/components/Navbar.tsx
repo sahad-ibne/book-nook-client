@@ -14,13 +14,16 @@ export default function Navbar() {
   const { data: session, isPending } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "All Books", href: "/books" },
-    { name: "Add Book", href: "/add-book" },
-    { name: "My Books", href: "/my-books" },
-    { name: "My Borrows", href: "/my-borrows" },
+    ...(session?.user
+      ? [
+          { name: "Add Book", href: "/add-book" },
+          { name: "My Books", href: "/my-books" },
+          { name: "My Borrows", href: "/my-borrows" },
+        ]
+      : []),
   ];
 
   const handleLogout = () => {
@@ -78,6 +81,7 @@ export default function Navbar() {
             );
           })}
         </nav>
+
         <div className="flex items-center gap-4">
           {isPending ? (
             <div className="text-xs text-gray-400">Loading...</div>

@@ -6,6 +6,7 @@ import { useSession } from "@/lib/auth-client";
 import { serverBaseUrl } from "@/lib/server";
 import Image from "next/image";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 interface Book {
   _id: string;
@@ -96,9 +97,13 @@ export default function MyBooksPage() {
     setSaving(true);
     const data = new FormData(event.currentTarget);
     try {
+      const token = await getTokenFromClient();
       const response = await fetch(`${serverBaseUrl}/books/${editing._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           title: data.get("title"),
           author: data.get("author"),
@@ -129,8 +134,12 @@ export default function MyBooksPage() {
     if (!deleting) return;
     setSaving(true);
     try {
+      const token = await getTokenFromClient();
       const response = await fetch(`${serverBaseUrl}/books/${deleting._id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       const result = await response.json();
       if (!response.ok)
