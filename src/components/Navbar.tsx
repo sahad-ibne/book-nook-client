@@ -67,7 +67,7 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-xs font-semibold tracking-wider transition-colors ${
+                className={`text-sm font-semibold tracking-wider transition-colors ${
                   isActive
                     ? "text-[#2D5A3F]"
                     : "text-gray-600 hover:text-[#2D5A3F]"

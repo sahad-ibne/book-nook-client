@@ -39,7 +39,7 @@ export default function Footer() {
               aria-label="Facebook"
               className="rounded-lg border border-white/20 px-3 py-2 text-sm text-gray-300 hover:text-white"
             >
-              f
+              Facebook
             </a>
             <a
               href="https://instagram.com"
@@ -48,7 +48,7 @@ export default function Footer() {
               aria-label="Instagram"
               className="rounded-lg border border-white/20 px-3 py-2 text-sm text-gray-300 hover:text-white"
             >
-              ig
+              INSTAGRAM
             </a>
             <a
               href="https://linkedin.com"
@@ -57,7 +57,7 @@ export default function Footer() {
               aria-label="LinkedIn"
               className="rounded-lg border border-white/20 px-3 py-2 text-sm text-gray-300 hover:text-white"
             >
-              Ln
+              LINKED IN
             </a>
           </div>
         </div>

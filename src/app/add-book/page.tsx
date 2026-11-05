@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "@/lib/auth-client";
 import { serverBaseUrl } from "@/lib/server";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const categories = [
   "Fiction",
@@ -90,9 +91,14 @@ export default function AddBookPage() {
 
       const copiesValue = Number(form.get("copies")) || 1;
 
+      const token = await getTokenFromClient();
+
       const response = await fetch(`${serverBaseUrl}/books`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           title: form.get("title"),
           author: form.get("author"),

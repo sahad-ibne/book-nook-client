@@ -13,7 +13,6 @@ export default function Home() {
       <BookGenres />
       <BookStories />
       <NewsArticles />
-      <p>Hello, Next.js!</p>
     </div>
   );
 }
